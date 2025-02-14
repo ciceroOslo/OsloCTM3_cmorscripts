@@ -142,6 +142,9 @@ for m,metyear in enumerate(metyear_list):
     data_out[comp].attrs["unit"]='Pa'
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
+    data_out.attrs["model_verison"] = model_id
+    data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+
     data_out[comp].attrs['long_name'] = long_name_dict[comp]
     data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
     

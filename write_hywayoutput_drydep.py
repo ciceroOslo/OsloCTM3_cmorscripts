@@ -105,6 +105,9 @@ for m,metyear in enumerate(metyear_list):
 
         data_out = data_field[[comp]]
         data_out.attrs["history"] = history_text
+        data_out.attrs["model_verison"] = model_id
+        data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+
         data_out[comp].attrs['long_name'] = long_name_dict[comp]
 
         print(data_out)
