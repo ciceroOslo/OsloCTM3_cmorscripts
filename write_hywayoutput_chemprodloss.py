@@ -12,6 +12,9 @@ import sys
 #more standardized ouput. This script is adjusted to make the output
 #in the format needed in HYway, but can easily be adjusted to other projects.
 
+
+#In addition to chemprod and loss, the script write also volume.
+
 def read_prod_loss(filepath, year, year_out,variable):
     variable_list = ['lat','lon','lev','delta_time',variable]
 
@@ -105,18 +108,20 @@ long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to
                   #'losso3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_destruction',
                   'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_production',
                   'lossh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_destruction',
-                  'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
+                  #'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
                   'prodco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_production',
                   'lossco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_destruction',
                   'prodhcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_production',
                   'losshcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction',
-                  'losshchophoto':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis',
+                  'lossphotohcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis',
                   'prodmethanol': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
                   'lossmethanol': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction',
                   #'lossisoprene':'tendency_of_atmosphere_mass_content_of_isoprene_due_to_chemical_destruction',
                   'prodh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_production',
-                  'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction'}
-                  
+                  'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction',
+                  'prodmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_production',
+                  'lossmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_destruction'}
+
 
 complist_ctm_dict = {'o3'       : 'O3',
                      'h2o'	: 'H2O',
@@ -125,7 +130,8 @@ complist_ctm_dict = {'o3'       : 'O3',
                      'co'	: 'CO',
                      'hcho'	: 'CH2O',
                      'methanol'	: 'CH3OH',
-                     'isop'	: 'ISOPRENE'}
+                     'isop'	: 'ISOPRENE',
+                     'mhp'      : 'CH3O2H'}
 
 #Specify outputpath
 outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
@@ -140,12 +146,12 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
+scen = 'TEST_CTM3/CTM3_hyway_test_metfix'
+yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
-metyear_list = [2009,2010]
+metyear_list = [2009] # ,2010]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
@@ -158,7 +164,7 @@ for m,metyear in enumerate(metyear_list):
 
     #Loop trough filenames
     for c,comp in enumerate(long_name_dict):
-        
+        print(comp)
         variable_id = comp
         filename = outputpath + variable_id+'_'+table_id+'_'+model_id+'_'+project_id + '_' +experiment_id+'_'+member_id+'_'+time_range+'.nc'
         print(filename)
@@ -169,7 +175,7 @@ for m,metyear in enumerate(metyear_list):
         print(var)
 
         
-        if var == 'hchophoto':
+        if var == 'photohcho':
             variable = complist_ctm_dict['hcho'] +'_'+ prodloss.upper()
             nchem = 3 # ! CH2O + hv   -> H2 + CO   DBCH2O
         elif var == 'ch4':
@@ -184,27 +190,43 @@ for m,metyear in enumerate(metyear_list):
 
         
         pl_data = read_prod_loss(filepath, year, year_out,variable)
-       
-        pl_data = pl_data.isel(nchemdiag=nchem)
-       
+
+        if prodloss == 'loss':
+            #Remove drydeposition
+            pl_data = pl_data.isel(nchemdiag=nchem)-pl_data.isel(nchemdiag=1)
+        else:
+            pl_data = pl_data.isel(nchemdiag=nchem)
         
         volume = read_avgsav_volume(filepath, year,year_out)
         print(volume)
         if c == 0:
-            volume.to_netcdf('volume_' +time_range+'.nc' ,encoding={"time":{'dtype': 'float64'}})
+            
+            volume_filename = outputpath + 'volume' +'_'+table_id+'_'+model_id+'_'+project_id + '_' +experiment_id+'_'+member_id+'_'+time_range+'.nc'
+            print('Write to file: ' + volume_filename)
+            volume.to_netcdf(volume_filename ,encoding={"time":{'dtype': 'float64'}})
 
         
         #If total production, we have to remove the emissions.
-        if prodloss == 'prod' and var != 'h2o':
-            emisdata = read_emis_accumulated(filepath,year,year_out,var,complist_ctm_dict[var])
-            print(emisdata)
-            pl_data[variable] = pl_data[variable] - emisdata[var]
+        if (prodloss == 'prod'):
+            if var == 'mhp':
+                print('No emissions for: ', var)
+            elif var == 'h2o':
+                print('No emissions for: ', var)
             
+            elif var == 'h2' and experiment_id == 'transient2010s':
+                print('No emissions in this experiment: ', experiment_id)
+            else:
+                emisdata = read_emis_accumulated(filepath,year,year_out,var,complist_ctm_dict[var])
+                print(emisdata)
+                pl_data[variable] = pl_data[variable] - emisdata[var]
+
+        
+        
             
         #Divide by volume
                 
         pl_data[comp] = pl_data[variable]/volume['volume']
-        pl_data[comp].attrs["unit"] =  'kg s-1 m-2'
+        pl_data[comp].attrs["unit"] =  'kg m-3 s-1'
 
                    
                 
