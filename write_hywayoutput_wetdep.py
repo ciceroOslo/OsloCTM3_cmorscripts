@@ -44,23 +44,51 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variables):
 
     return monthly_mean
 
-
+"""
 long_name_dict = {'wethcho' : 'Wet deposition rate of formaldehyde',	
                   'wetch3oh': 'Wet deposition rate of methanol',	
                   'wetmhp': 'Wet deposition rate of methyl hydroperoxide',	
                   'wetso4': 'Wet deposition rate of sulphate',	
                   'wetnh3': 'Wet deposition rate of ammonia',
                   'wethcooh': 'Wet deposition rate of formic acid',
-                  'wetch3cooh': 'Wet deposition rate of acetic acid'}	
+                  'wetch3cooh': 'Wet deposition rate of acetic acid'}
+"""
 
-complist_dict = {'wethcho' : 'CH2O',	
-                  'wetch3oh': 'CH3OH',	
-                  'wetmhp': 'CH3O2H',	
-                  'wetso4': 'SO4',	
-                  'wetnh3': 'NH3'} #,
-                  #'wethcooh': 'none',
-                  #'wetch3cooh': 'none'}
+long_name_dict = {'wetch3cooh':	'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_wet_deposition',
+                  'wetch3coch3':'tendency_of_atmosphere_mass_content_of_acetone_due_to_wet_deposition',
+                  'wetnh3':	'tendency_of_atmosphere_mass_content_of_ammonia_due_to_wet_deposition',
+                  'wetc2h6':	'tendency_of_atmosphere_mass_content_of_ethane_due_to_wet_deposition',
+                  'wetc2h4':	'tendency_of_atmosphere_mass_content_of_ethene_due_to_wet_deposition',
+                  'wetc2h2':	'tendency_of_atmosphere_mass_content_of_ethyne_due_to_wet_deposition',
+                  'wethcho':	'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_wet_deposition',
+                  'wethcooh':	'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_wet_deposition',
+                  'wetchocho':	'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_wet_deposition',
+                  'wetisop':	'tendency_of_atmosphere_mass_content_of_isoprene_due_to_wet_deposition',
+                  'wetch3oh':	'tendency_of_atmosphere_mass_content_of_methanol_due_to_wet_deposition',
+                  'wetmhp':	'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_wet_deposition',
+                  'wetpan':	'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_wet_deposition',
+                  'wetso4':	'tendency_of_atmosphere_mass_content_of_sulphate_due_to_wet_deposition'}
 
+
+
+complist_dict = {'wetch3coch3': 'ACETONE',
+                 'wetnh3':'NH3',
+                 'wetc2h6' :'C2H6',
+                 'wetc2h4' : 'C2H4',
+                 #'wetc2h2' : 'none',
+                 'wethcho': 'CH2O',	
+                 #'wethcooh':'none',
+                 #'wetch3cooh: 'none', &
+                 'wetchocho':'HCOHCO',
+                 'wetisop': 'ISOPRENE', 
+                 'wetch3oh': 'CH3OH',	
+                 'wetmhp': 'CH3O2H',	
+                 'wetpan' : 'PANX',
+                 'wetso4': 'SO4'}
+
+
+    
+                  
 #Specify outputpath
 outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
 
@@ -74,8 +102,9 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'TEST_CTM3/CTM3_test_drydep'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
 yr = ''
+
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
@@ -101,7 +130,7 @@ for m,metyear in enumerate(metyear_list):
 
         data_out = data_field[[comp]]
         data_out.attrs["history"] = history_text
-        data_out.attrs["model_verison"] = model_id
+        data_out.attrs["model_version"] = model_id
         data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
         data_out[comp].attrs['long_name'] = long_name_dict[comp]

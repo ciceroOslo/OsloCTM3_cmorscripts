@@ -70,7 +70,7 @@ def find_molecw(variable):
 
     return molecw
 
-
+"""
 long_name_dict = {'o3':'mole_fraction_of_ozone_in_air',
                   'h2o'	:'mole_fraction_of_water_vapor_in_air',
                   'h2'	:'mole_fraction_of_molecular_hydrogen_in_air',
@@ -98,6 +98,40 @@ long_name_dict = {'o3':'mole_fraction_of_ozone_in_air',
                   'nh3'	:'mole_fraction_of_ammonia_in_air',
                   'nmvoc':'mole_fraction_of_nmvoc_expressed_as_carbon_in_air',
                   'pan':'mole_fraction_of_peroxyacetyl_nitrate_in_air'}
+"""
+
+
+long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
+                  'ch3coch3':	'mole_fraction_of_acetone_in_air',
+                  'nh3':	'mole_fraction_of_ammonia_in_air',
+                  'c6h6':	'mole_fraction_of_benzene_in_air',
+                  'co':	'mole_fraction_of_carbon_monoxide_in_air',
+                  'dms':	'mole_fraction_of_dimethyl_sulfide_in_air',
+                  'c2h6':	'mole_fraction_of_ethane_in_air',
+                  'c2h4':	'mole_fraction_of_ethene_in_air',
+                  'c2h2':	'mole_fraction_of_ethyne_in_air',
+                  'hcho':	'mole_fraction_of_formaldehyde_in_air',
+                  'hcooh':	'mole_fraction_of_formic_acid_in_air',
+                  'chocho':	'mole_fraction_of_glyoxal_in_air',
+                  'oh':	'mole_fraction_of_hydroxyl_radical_in_air',
+                  'isop':	'mole_fraction_of_isoprene_in_air',
+                  'ch4':	'mole_fraction_of_methane_in_air',
+                  'ch3oh':	'mole_fraction_of_methanol_in_air',
+                  'mhp':	'mole_fraction_of_mhp_in_air',
+                  'h2':	'mole_fraction_of_molecular_hydrogen_in_air',
+                  'mtp':	'mole_fraction_of_monoterpenes_in_air',
+                  'hno3':	'mole_fraction_of_nitric_acid_in_air',
+                  'no2':	'mole_fraction_of_nitrogen_dioxide_in_air',
+                  'no':	'mole_fraction_of_nitrogen_monoxide_in_air',
+                  'nmvoc':	'mole_fraction_of_nmvoc_expressed_as_carbon_in_air',
+                  'o3':	'mole_fraction_of_ozone_in_air',
+                  'pan':	'mole_fraction_of_peroxyacetyl_nitrate_in_air',
+                  'c3h8':	'mole_fraction_of_propane_in_air',
+                  'c3h6':	'mole_fraction_of_propene_in_air',
+                  'so2':	'mole_fraction_of_sulfur_dioxide_in_air',
+                  'tol':	'mole_fraction_of_toluene_in_air',
+                  'h2o':	'mole_fraction_of_water_vapor_in_air'}
+
 
 
 voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
@@ -145,7 +179,28 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'CH3O2'   ,#    47.034    ''
            'C2H5O2'  ,#    61.060    ''
            'C4H9O2' ,#     89.112    ''
-           'C6H13O2'] #    117.164    ''
+           'C6H13O2', #    117.164    ''
+           'SOAGAS11',
+           'SOAGAS12',
+           'SOAGAS13',
+           'SOAGAS21',
+           'SOAGAS22',
+           'SOAGAS23',
+           'SOAGAS31',
+           'SOAGAS32',
+           'SOAGAS33',
+           'SOAGAS41',
+           'SOAGAS42',
+           'SOAGAS43',
+           'SOAGAS51',
+           'SOAGAS52',
+           'SOAGAS53',
+           'SOAGAS61',
+           'SOAGAS62',
+           'SOAGAS71',
+           'SOAGAS72',
+           'SOAGAS81',
+           'SOAGAS82']
 
 #complist_ctm_dict_test = {'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
 #                          'o3'       : ['O3']}
@@ -175,6 +230,8 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
                      'nh3'	: ['NH3'],
                      'nmvoc'    : voclist,
+                     'c6h6'     : ['Benzene'],
+                     'tol'      : ['Tolmatic'], 
                      'pan'      : ['PANX','CH3X']}
 
 
@@ -191,12 +248,12 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis'
+yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
-metyear_list = [2009,2010]
+metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
@@ -236,10 +293,16 @@ for m,metyear in enumerate(metyear_list):
         data_out = data_field[['ihya','ihyb',comp]]
         data_out.attrs = data_field.attrs
         data_out.attrs["history"] = history_text
-        data_out.attrs["model_verison"] = model_id
+        data_out.attrs["model_version"] = model_id
         data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
         data_out[comp].attrs['long_name'] = long_name_dict[comp]
+
+        if comp == 'nmvoc':
+            print('No spesicif molecular weight')
+        else:
+            data_out[comp].attrs['molecular_weight'] = str(find_molecw(variables[0]))
+            
         if comp == 'pan':
             data_out[comp].attrs['original_components'] = 'Difference '+'_'.join(variables)
         else:

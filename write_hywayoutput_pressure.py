@@ -85,12 +85,12 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
+yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
-metyear_list = [2009,2010]
+metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.

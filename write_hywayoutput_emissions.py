@@ -40,29 +40,28 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     return data
 
 
-long_name_dict = {'emic2h2':'Total emission rate of ethyne',
+long_name_dict = {'emich3cooh':'Total emission rate of acetic acid',
+                  'emich3coch3':'Total emission rate of acetone',
+                  'eminh3':'Total emission rate of ammonia',
+                  'emico':'Total emission rate of carbon monoxide',
+                  'emidms':'Total emission rate of dimethyl sulfide',	
+                  'emic2h2':'Total emission rate of ethyne',
 	          'emic2h4':'Total emission rate of ethene',	
-	          'emic2h6':'Total emission rate of ethane',	
+	          'emic2h6':'Total emission rate of ethane',
+                  'emihcho':'Total emission rate of formaldehyde',
+                  'emihcooh':'Total emission rate of formic acid',
+                  'emiisop':'Total emission rate of isoprene',
+                  'emich4':'Total emission rate of methane',
+                  'emich3oh':'Total emission rate of methanol',
+                  'emih2':'Total emission rate of hydrogen',
+	          'emimtp':'Total emission rate of monoterpenes',
+                  'emino': 'Total emission rate of no',
+                  'emino2': 'Total emission rate of no2',
+                  'eminmvoc':'Total emission rate of nmvoc',	
 	          'emic3h6':'Total emission rate of propene',	
 	          'emic3h8':'Total emission rate of propane',	
-	          'emich3coch3':'Total emission rate of acetone',	
-	          'emich3cooh':'Total emission rate of acetic acid',	
-	          'emich3oh':'Total emission rate of methanol',
-	          'emich4':'Total emission rate of methane',	
-	          'emico':'Total emission rate of carbon monoxide',	
-	          'emidms':'Total emission rate of dimethyl sulfide',	
-	          'emih2':'Total emission rate of hydrogen',
-	          'emihcooh':'Total emission rate of formic acid',	
-	          'emihcho':'Total emission rate of formaldehyde',
-	          'emiisop':'Total emission rate of isoprene',	
-	          'emimtp':'Total emission rate of monoterpenes', 	
-	          'eminh3':'Total emission rate of ammonia',	
-	          'eminmvoc':'Total emission rate of nmvoc',	
-	          'eminox':'Total emission rate of nox',
 	          'emiso2':'Total emission rate of sulfur dioxide',	
 	          'emiso4':'Total direct emission rate of sulphate'}	
-
-
 
 
 voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
@@ -127,7 +126,8 @@ complist_dict = {#'emic2h2': ['none'],
 	         'emimtp': ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
 	         'eminh3': ['NH3'],
 	         'eminmvoc': voclist,
-	         'eminox': ['NO2','NO'],
+	         'emino': ['NO'],
+                 'emino2': ['NO2'],
 	         'emiso2': ['SO2'],
 	         'emiso4': ['SO4']}
 
@@ -145,12 +145,12 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis'
+yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
-metyear_list = [2009,2010]
+metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
