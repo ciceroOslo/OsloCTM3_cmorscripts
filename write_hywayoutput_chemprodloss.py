@@ -108,20 +108,32 @@ long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to
                   #'losso3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_destruction',
                   'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_production',
                   'lossh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_destruction',
-                  #'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
+                  'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
                   'prodco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_production',
                   'lossco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_destruction',
                   'prodhcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_production',
                   'losshcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction',
                   'lossphotohcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis',
-                  'prodmethanol': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
-                  'lossmethanol': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction',
-                  #'lossisoprene':'tendency_of_atmosphere_mass_content_of_isoprene_due_to_chemical_destruction',
+                  'prodch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
+                  'lossch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction',
+                  'lossisop':'tendency_of_atmosphere_mass_content_of_isoprene_due_to_chemical_destruction',
                   'prodh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_production',
                   'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction',
                   'prodmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_production',
-                  'lossmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_destruction'}
+                  'lossmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_destruction',
+                  #'prodch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_production',
+                  #'lossch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_destruction',
+                  'prodch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_production',
+                  'lossch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_destruction',
+                  #'prodhcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_production',
+                  #'losshcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_destruction',
+                  'prodchocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_production',
+                  'losschocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_destruction',
+                  'prodpan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_production',
+                  'losspan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_destruction'}
 
+long_name_dict = {'prodch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
+                  'lossch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction'}
 
 complist_ctm_dict = {'o3'       : 'O3',
                      'h2o'	: 'H2O',
@@ -129,9 +141,15 @@ complist_ctm_dict = {'o3'       : 'O3',
                      'ch4'	: 'CH4',
                      'co'	: 'CO',
                      'hcho'	: 'CH2O',
-                     'methanol'	: 'CH3OH',
+                     'ch3oh'	: 'CH3OH',
                      'isop'	: 'ISOPRENE',
-                     'mhp'      : 'CH3O2H'}
+                     'mhp'      : 'CH3O2H',
+                     'ch3coch3' : 'ACETONE',
+                     'chocho'   : 'HCOHCO',
+                     'pan'      : 'PANX'}
+
+#'ch3cooh'  : 'NONE'
+#'hcooh' :'NONE',
 
 #Specify outputpath
 outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
@@ -146,7 +164,7 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test_metfix'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
 yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
@@ -212,7 +230,10 @@ for m,metyear in enumerate(metyear_list):
                 print('No emissions for: ', var)
             elif var == 'h2o':
                 print('No emissions for: ', var)
-            
+            elif var == 'pan':
+                print('No emissions for: ', var)
+            elif var == 'chocho':
+                print('No emissions for: ', var)
             elif var == 'h2' and experiment_id == 'transient2010s':
                 print('No emissions in this experiment: ', experiment_id)
             else:

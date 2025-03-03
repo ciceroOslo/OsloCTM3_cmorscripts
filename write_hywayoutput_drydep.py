@@ -45,7 +45,7 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variable):
     return monthly_mean
 
 
-
+'''
 
 long_name_dict = {'dryh2' : 'Dry deposition rate of hydrogen',	
                   'dryo3':'Dry deposition rate of ozone',
@@ -55,14 +55,46 @@ long_name_dict = {'dryh2' : 'Dry deposition rate of hydrogen',
                   'drych3oh':'Dry deposition rate of methanol',
                   'drymhp':'Dry deposition rate of methyl hydroperoxide'}
 
+'''
+
+long_name_dict = {'drych3cooh'	:'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_dry_deposition',
+                  'drych3coch3'	:'tendency_of_atmosphere_mass_content_of_acetone_due_to_dry_deposition',
+                  'dryco'   	:'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_dry_deposition',
+                  'dryc2h6'	:'tendency_of_atmosphere_mass_content_of_ethane_due_to_dry_deposition',
+                  'dryc2h4'	:'tendency_of_atmosphere_mass_content_of_ethene_due_to_dry_deposition',
+                  'dryc2h2'	:'tendency_of_atmosphere_mass_content_of_ethyne_due_to_dry_deposition',
+                  'dryhcho'	:'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_dry_deposition',
+                  'dryhcooh'	:'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_dry_deposition',
+                  'drychocho'	:'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_dry_deposition',
+                  'dryisop'	:'tendency_of_atmosphere_mass_content_of_isoprene_due_to_dry_deposition',
+                  'drych4'	:'tendency_of_atmosphere_mass_content_of_methane_due_to_dry_deposition',
+                  'drych3oh'	:'tendency_of_atmosphere_mass_content_of_methanol_due_to_dry_deposition',
+                  'drymhp'	:'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_dry_deposition',
+                  'dryh2'	:'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_dry_deposition',
+                  'dryo3'	:'tendency_of_atmosphere_mass_content_of_ozone_due_to_dry_deposition',
+                  'drypan'	:'tendency_of_atmosphere_mass_content_of_pan_due_to_dry_deposition'}
+
+
 
 complist_dict = {'dryh2' : 'H2',	
+                 'drych3coch3' :'ACETONE',
                  'dryo3':'O3',
                  'dryco':'CO',
+                 'drychocho': 'HCOHCO',
+                 'dryisop' : 'ISOPRENE',
                  #'drych4':'CH4',
                  'dryhcho':'CH2O',	
                  'drych3oh':'CH3OH',
-                 'drymhp':'CH3O2H'}
+                 'drymhp':'CH3O2H',
+                 #'drych3cooh':'',
+                 'dryc2h6':'C2H6',
+                 'dryc2h4':'C2H4',
+                 'drypan':'PANX'}
+                 #'dryc2h2'
+                 #dryhcooh}
+#Add pan.
+
+
 
 
 #Specify outputpath
@@ -78,7 +110,7 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'TEST_CTM3/CTM3_test_drydep'
+scen =  'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
 yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
@@ -105,7 +137,7 @@ for m,metyear in enumerate(metyear_list):
 
         data_out = data_field[[comp]]
         data_out.attrs["history"] = history_text
-        data_out.attrs["model_verison"] = model_id
+        data_out.attrs["model_version"] = model_id
         data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
         data_out[comp].attrs['long_name'] = long_name_dict[comp]

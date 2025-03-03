@@ -60,12 +60,12 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 #Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
+scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
+yr = ''
 
 filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
 
-metyear_list = [2009,2010]
+metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
@@ -99,7 +99,7 @@ for m,metyear in enumerate(metyear_list):
     data_out = data_field[[comp]]
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
-    data_out.attrs["model_verison"] = model_id
+    data_out.attrs["model_version"] = model_id
     data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
 
     data_out[comp].attrs['long_name'] = long_name_dict[comp]
