@@ -2,11 +2,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
-#import matplotlib.pyplot as plt
 import sys
-#from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-#                               AutoMinorLocator)
-
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -27,19 +23,22 @@ def read_prod_loss(filepath, year, year_out,variable):
         if mnd == 0:
             data = xr.open_dataset(filepath +'/' + files ,decode_cf=False,decode_times=False)
             data = data.get(variable_list)
-            data[variable] = data[variable]/data['delta_time'] #kg per gridbox per sec.
-            
             data = data.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
 
         else:
             data_add = xr.open_dataset(filepath +'/' + files ,decode_cf=False,decode_times=False)
             data_add = data_add.get(variable_list)
-            data_add[variable] = data_add[variable]/data_add['delta_time'] #kg per gridbox per sec.
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
 
     data.lat.attrs['long_name'] = 'latitude'
     data.lon.attrs['long_name'] = 'longitude'
+    
+    #NB delta_time in the OsloCTM3 output is wrong. Recalculate it here.
+    days_in_month = data.time.dt.days_in_month
+    data['delta_time'] = days_in_month*60.0*60.0*24.0
+              
+    data[variable] = data[variable]/data['delta_time'] #kg per gridbox per sec.
 
     data[variable].attrs['unit'] = 'kg s-1'
     
@@ -65,6 +64,10 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     data.lat.attrs['long_name'] = 'latitude'
     data.lon.attrs['long_name'] = 'longitude'
 
+    #NB delta_time in the OsloCTM3 output is wrong. Recalculate it here.
+    days_in_month = data.time.dt.days_in_month
+    data['delta_time'] = days_in_month*60.0*60.0*24.0
+              
     #Keep in 3D
     data[variable_out] = data[variable]/data['delta_time']
     data[variable_out].attrs['unit'] = 'kg s-1'
@@ -130,10 +133,12 @@ long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to
                   'prodchocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_production',
                   'losschocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_destruction',
                   'prodpan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_production',
-                  'losspan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_destruction'}
+                  'losspan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_destruction',
+                  'lossc2h6':'tendency_of_atmosphere_mass_content_of_ethane_due_to_chemical_destruction',
+                  'lossc2h4':'tendency_of_atmosphere_mass_content_of_ethene_due_to_chemical_destruction'} #,
+                  #'lossc2h2':'tendency_of_atmosphere_mass_content_of_ethyne_due_to_chemical_destruction'}
 
-long_name_dict = {'prodch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
-                  'lossch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction'}
+
 
 complist_ctm_dict = {'o3'       : 'O3',
                      'h2o'	: 'H2O',
@@ -146,7 +151,9 @@ complist_ctm_dict = {'o3'       : 'O3',
                      'mhp'      : 'CH3O2H',
                      'ch3coch3' : 'ACETONE',
                      'chocho'   : 'HCOHCO',
-                     'pan'      : 'PANX'}
+                     'pan'      : 'PANX',
+                     'c2h6'     : 'C2H6',
+                     'c2h4'     : 'C2H4'}
 
 #'ch3cooh'  : 'NONE'
 #'hcooh' :'NONE',

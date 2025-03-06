@@ -31,7 +31,11 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     data.lat.attrs['long_name'] = 'latitude'
     data.lon.attrs['long_name'] = 'longitude'
 
-    
+    #NB delta_time in the OsloCTM3 output is wrong. Recalculate it here.
+    days_in_month = data.time.dt.days_in_month
+    data['delta_time'] = days_in_month*60.0*60.0*24.0
+              
+        
     data[variable_out] = data[variable].sum(dim='lev')/(data['gridarea']*data['delta_time'])
     data[variable_out].attrs['unit'] = 'kg m-2 s-1'
     
