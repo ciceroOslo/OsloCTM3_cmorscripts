@@ -2,10 +2,12 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
-#import matplotlib.pyplot as plt
+
 import sys
-#from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-#                               AutoMinorLocator)
+
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
 
 
 #This script read the OsloCTM3 model output and convert it to
@@ -41,25 +43,12 @@ long_name_dict = {'areacella':'Area of grid cell'}
 complist_ctm_dict = {'areacella': 'gridarea'}
 
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
-
-#Experiment and simulation infor:
+#Overwrite the table_id from the specify_output file
 table_id = 'fixed'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
 
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
+filepath = filepath + scen+'/'+yr+ '/'
 
-#Raw model output 
-scen = 'CNTR_v2'
-yr = 'YR1'
 
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
