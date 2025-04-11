@@ -4,6 +4,10 @@ import xarray as xr
 import datetime
 import sys
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
+
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -46,26 +50,8 @@ long_name_dict = {'airmass':'atmosphere_mass_of_air_per_unit_area'}
 complist_ctm_dict = {'airmass':'AIR' }
 
 
-               
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
+filepath = filepath + scen+'/'+yr+ '/'
 
-#Experiment and simulation infor:
-table_id = 'monthly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
-
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
-yr = ''
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.

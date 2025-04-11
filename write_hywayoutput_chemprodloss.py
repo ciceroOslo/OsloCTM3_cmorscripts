@@ -8,6 +8,10 @@ import sys
 #more standardized ouput. This script is adjusted to make the output
 #in the format needed in HYway, but can easily be adjusted to other projects.
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
+
 
 #In addition to chemprod and loss, the script write also volume.
 
@@ -124,20 +128,19 @@ long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to
                   'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction',
                   'prodmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_production',
                   'lossmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_destruction',
-                  #'prodch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_production',
-                  #'lossch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_destruction',
+                  'prodch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_production',
+                  'lossch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_destruction',
                   'prodch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_production',
                   'lossch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_destruction',
-                  #'prodhcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_production',
-                  #'losshcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_destruction',
+                  'prodhcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_production',
+                  'losshcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_destruction',
                   'prodchocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_production',
                   'losschocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_destruction',
                   'prodpan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_production',
                   'losspan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_destruction',
                   'lossc2h6':'tendency_of_atmosphere_mass_content_of_ethane_due_to_chemical_destruction',
-                  'lossc2h4':'tendency_of_atmosphere_mass_content_of_ethene_due_to_chemical_destruction'} #,
+                  'lossc2h4':'tendency_of_atmosphere_mass_content_of_ethene_due_to_chemical_destruction'} #, #,
                   #'lossc2h2':'tendency_of_atmosphere_mass_content_of_ethyne_due_to_chemical_destruction'}
-
 
 
 complist_ctm_dict = {'o3'       : 'O3',
@@ -153,30 +156,13 @@ complist_ctm_dict = {'o3'       : 'O3',
                      'chocho'   : 'HCOHCO',
                      'pan'      : 'PANX',
                      'c2h6'     : 'C2H6',
-                     'c2h4'     : 'C2H4'}
+                     'c2h4'     : 'C2H4',
+                     'c2h2'     : 'C2H2',
+                     'hcooh'    : 'HCOOH',
+                     'ch3cooh'  : 'CH3COOH'}
 
-#'ch3cooh'  : 'NONE'
-#'hcooh' :'NONE',
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
-
-#Experiment and simulation infor:
-table_id = 'monthly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
-
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
-yr = ''
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009] # ,2010]
+filepath = filepath +scen+'/'+yr+ '/'
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.

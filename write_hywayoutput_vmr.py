@@ -2,11 +2,11 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
-#import matplotlib.pyplot as plt
 import sys
-#from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-#                               AutoMinorLocator)
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -62,7 +62,7 @@ def find_molecw(variable):
     #Find molecular weight for given variable
 
     #Read input file used in the CTM
-    tracer_file = 'input/tracer_list_all_h2.d'
+    tracer_file = 'input/tracer_list_all_h2_withVOC.d'
     header_list = ["TracerNumber","TCNAME","TCMASS","Comments"]
     df_tracer = pd.read_csv(tracer_file,skiprows=3,sep="\'",usecols=[0,1,2,3],names=header_list)
 
@@ -70,42 +70,14 @@ def find_molecw(variable):
 
     return molecw
 
-"""
-long_name_dict = {'o3':'mole_fraction_of_ozone_in_air',
-                  'h2o'	:'mole_fraction_of_water_vapor_in_air',
-                  'h2'	:'mole_fraction_of_molecular_hydrogen_in_air',
-                  'ch4'	:'mole_fraction_of_methane_in_air',
-                  'co'	:'mole_fraction_of_carbon_monoxide_in_air',
-                  'no2'	:'mole_fraction_of_nitrogen_dioxide_in_air',
-                  'no'	:'mole_fraction_of_nitrogen_monoxide_in_air',
-                  'oh'	:'mole_fraction_of_hydroxyl_radical_in_air',
-                  'hcho'	:'mole_fraction_of_formaldehyde_in_air',
-                  'so2'	:'mole_fraction_of_sulfur_dioxide_in_air',
-                  'c2h2'	:'mole_fraction_of_ethyne_in_air',
-                  'c2h4'	:'mole_fraction_of_ethene_in_air',
-                  'c2h6'	:'mole_fraction_of_ethane_in_air',
-                  'c3h6'	:'mole_fraction_of_propene_in_air',
-                  'c3h8'	:'mole_fraction_of_propane_in_air',
-                  'ch3coch3':'mole_fraction_of_acetone_in_air',
-                  'ch3cooh'	:'mole_fraction_of_acetic_acid_in_air',
-                  'ch3oh'	:'mole_fraction_of_methanol_in_air',
-                  'dms'	:'mole_fraction_of_dimethyl_sulfide_in_air',
-                  'hcooh'	:'mole_fraction_of_formic_acid_in_air',
-                  'hno3'	:'mole_fraction_of_nitric_acid_in_air',
-                  'isop'	:'mole_fraction_of_isoprene_in_air',
-                  'mhp'	:'mole_fraction_of_mhp_in_air',
-                  'mtp'	:'mole_fraction_of_monoterpenes_in_air',
-                  'nh3'	:'mole_fraction_of_ammonia_in_air',
-                  'nmvoc':'mole_fraction_of_nmvoc_expressed_as_carbon_in_air',
-                  'pan':'mole_fraction_of_peroxyacetyl_nitrate_in_air'}
-"""
+
 
 
 long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
                   'ch3coch3':	'mole_fraction_of_acetone_in_air',
                   'nh3':	'mole_fraction_of_ammonia_in_air',
                   'c6h6':	'mole_fraction_of_benzene_in_air',
-                  'co':	'mole_fraction_of_carbon_monoxide_in_air',
+                  'co':	        'mole_fraction_of_carbon_monoxide_in_air',
                   'dms':	'mole_fraction_of_dimethyl_sulfide_in_air',
                   'c2h6':	'mole_fraction_of_ethane_in_air',
                   'c2h4':	'mole_fraction_of_ethene_in_air',
@@ -113,18 +85,18 @@ long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
                   'hcho':	'mole_fraction_of_formaldehyde_in_air',
                   'hcooh':	'mole_fraction_of_formic_acid_in_air',
                   'chocho':	'mole_fraction_of_glyoxal_in_air',
-                  'oh':	'mole_fraction_of_hydroxyl_radical_in_air',
+                  'oh':	        'mole_fraction_of_hydroxyl_radical_in_air',
                   'isop':	'mole_fraction_of_isoprene_in_air',
                   'ch4':	'mole_fraction_of_methane_in_air',
                   'ch3oh':	'mole_fraction_of_methanol_in_air',
                   'mhp':	'mole_fraction_of_mhp_in_air',
-                  'h2':	'mole_fraction_of_molecular_hydrogen_in_air',
+                  'h2':	        'mole_fraction_of_molecular_hydrogen_in_air',
                   'mtp':	'mole_fraction_of_monoterpenes_in_air',
                   'hno3':	'mole_fraction_of_nitric_acid_in_air',
                   'no2':	'mole_fraction_of_nitrogen_dioxide_in_air',
-                  'no':	'mole_fraction_of_nitrogen_monoxide_in_air',
+                  'no':	        'mole_fraction_of_nitrogen_monoxide_in_air',
                   'nmvoc':	'mole_fraction_of_nmvoc_expressed_as_carbon_in_air',
-                  'o3':	'mole_fraction_of_ozone_in_air',
+                  'o3':	        'mole_fraction_of_ozone_in_air',
                   'pan':	'mole_fraction_of_peroxyacetyl_nitrate_in_air',
                   'c3h8':	'mole_fraction_of_propane_in_air',
                   'c3h6':	'mole_fraction_of_propene_in_air',
@@ -137,8 +109,8 @@ long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
 voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'C2H6',#        30.068    'Ethane [CH3CH3]'
            'C3H6',#        42.078    'Propene [CH3CHCH2]'
-           'C4H10',#       58.120    'Butane [CH3CH2CH2CH3]'
-           'C6H14',#       86.188    'Dimethylbutane'
+           #'C4H10',#       58.120    'Butane [CH3CH2CH2CH3]' Added in the bigalk
+           #'C6H14',#       86.188    'Dimethylbutane' Added in the bigalk
            'C6HXR_SOA',#  106.160    'm-Xylene/1,3-Dimethylbenzene [C8H10]'
            'CH2O'    ,#    30.026    'Formaldehyde'
            'CH3CHO' ,#     44.052    'Acetaldehyde'
@@ -200,10 +172,21 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'SOAGAS71',
            'SOAGAS72',
            'SOAGAS81',
-           'SOAGAS82']
+           'SOAGAS82',
+           'CH3COOH',#     60.052    'Acetic Acid'
+           'C2H5OH',#      46.069    'Ethanol'
+           'BIGALK',#      72.151    'Lumped Alkene C>3'
+           'BIGENE',#      56.106    'Lumped Alkene C>3'
+           'ALKO2',#       103.14    'Lumped alkane peroxy radical from BigAlk [C5H11O2]'
+           'ALKOOH',#      104.15    'Lumped alkane hydroperoxide [C5H12O2]'
+           'ALKNIT',#      117.15    'Standard Alkyl Nitrate from BIGALK + OH chem [C5H11ONO2]'
+           'ENEO2',#       105.11    'Lumped hydroperoxy radical from OH + large alkenes [C4H9O3]'
+           #'HONITR',#      135.12    'Lumped hydroxynitrates from various compounds [C4H9NO4]'
+           'HCOOH',#       46.025    'Formic Acid'
+           'C2H2']#        28.054    'Ethyne'
 
-#complist_ctm_dict_test = {'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
-#                          'o3'       : ['O3']}
+
+
 complist_ctm_dict = {'o3'       : ['O3'],
                      'h2o'	: ['H2O'],
                      'h2'	: ['H2'],
@@ -214,16 +197,16 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'oh'	: ['OH'],
                      'hcho'	: ['CH2O'],
                      'so2'	: ['SO2'],
-                     #'c2h2'	: ['none'],
+                     'c2h2'	: ['C2H2'],
                      'c2h4'	: ['C2H4'],
                      'c2h6'	: ['C2H6'],
                      'c3h6'	: ['C3H6'],
                      'c3h8'	: ['C3H8'],
                      'ch3coch3' : ['ACETONE'],
-                     #'ch3cooh'	: ['none'],
+                     'ch3cooh'	: ['CH3COOH'],
                      'ch3oh'	: ['CH3OH'],
                      'dms'	: ['DMS'] ,
-                     #'hcooh'	: ['none'],
+                     'hcooh'	: ['HCOOH'],
                      'hno3'	: ['HNO3'] ,
                      'isop'	: ['ISOPRENE'],
                      'mhp'	: ['CH3O2H'],
@@ -235,25 +218,9 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'pan'      : ['PANX','CH3X']}
 
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
 
-#Experiment and simulation infor:
-table_id = 'monthly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
+filepath = filepath + scen+'/'+yr+ '/'
 
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis'
-yr = ''
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.

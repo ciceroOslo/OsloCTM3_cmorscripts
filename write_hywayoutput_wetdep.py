@@ -4,6 +4,10 @@ import xarray as xr
 import datetime
 import sys
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
+
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -44,15 +48,6 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variables):
 
     return monthly_mean
 
-"""
-long_name_dict = {'wethcho' : 'Wet deposition rate of formaldehyde',	
-                  'wetch3oh': 'Wet deposition rate of methanol',	
-                  'wetmhp': 'Wet deposition rate of methyl hydroperoxide',	
-                  'wetso4': 'Wet deposition rate of sulphate',	
-                  'wetnh3': 'Wet deposition rate of ammonia',
-                  'wethcooh': 'Wet deposition rate of formic acid',
-                  'wetch3cooh': 'Wet deposition rate of acetic acid'}
-"""
 
 long_name_dict = {'wetch3cooh':	'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_wet_deposition',
                   'wetch3coch3':'tendency_of_atmosphere_mass_content_of_acetone_due_to_wet_deposition',
@@ -75,10 +70,10 @@ complist_dict = {'wetch3coch3': 'ACETONE',
                  'wetnh3':'NH3',
                  'wetc2h6' :'C2H6',
                  'wetc2h4' : 'C2H4',
-                 #'wetc2h2' : 'none',
+                 'wetc2h2' : 'C2H2',
                  'wethcho': 'CH2O',	
-                 #'wethcooh':'none',
-                 #'wetch3cooh: 'none', &
+                 'wethcooh':'HCOOH',
+                 'wetch3cooh': 'CH3COOH', 
                  'wetchocho':'HCOHCO',
                  'wetisop': 'ISOPRENE', 
                  'wetch3oh': 'CH3OH',	
@@ -88,27 +83,8 @@ complist_dict = {'wetch3coch3': 'ACETONE',
 
 
     
-                  
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
 
-#Experiment and simulation infor:
-table_id = 'monthly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
-
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis' 
-yr = ''
-
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
+filepath = filepath  + scen+'/'+yr+ '/'
 
 for m,metyear in enumerate(metyear_list):
     year = metyear

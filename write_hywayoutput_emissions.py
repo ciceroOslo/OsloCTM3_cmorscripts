@@ -4,6 +4,9 @@ import xarray as xr
 import datetime
 import sys
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output import *
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -109,52 +112,40 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'Trpinene' ,#  136.228    'Terpinene (alpha+gamma) [C10H16]'
            'TrpAlc' ,#    154.244    'Terpeoid alcohols [C10H18O]'
            'Sestrp' ,#    204.342    'Sesquiterpenes [C15H24]'
-           'Trp_Ket']#    152.228    'Terpenoid ketone [C10H16O]
-           
+           'Trp_Ket', #    152.228    'Terpenoid ketone [C10H16O]
+           'C2H2',
+           'CH3COOH',
+           'HCOOH',
+           'BIGENE',
+           'C2H5OH']
 
-complist_dict = {#'emic2h2': ['none'],
+           
+complist_dict = {'emic2h2': ['C2H2'],
                  'emic2h4': ['C2H4'],
 	         'emic2h6': ['C2H6'],
 	         'emic3h6': ['C3H6'],
 	         'emic3h8': ['C3H8'],
 	         'emich3coch3':['ACETONE'],
-	         #'emich3cooh': ['none'],
+	         'emich3cooh': ['CH3COOH'],
 	         'emich3oh': ['CH3OH'],
 	         #'emich4': ['CH4'],
 	         'emico': ['CO'],
 	         'emidms': ['DMS'],
 	         #'emih2': ['H2'],
-	         #'emihcooh': ['none'],
+	         'emihcooh': ['HCOOH'],
 	         'emihcho': ['CH2O'],
 	         'emiisop': ['ISOPRENE'],
 	         'emimtp': ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
 	         'eminh3': ['NH3'],
-	         'eminmvoc': voclist,
 	         'emino': ['NO'],
                  'emino2': ['NO2'],
 	         'emiso2': ['SO2'],
-	         'emiso4': ['SO4']}
+	         'emiso4': ['SO4'],
+	         'eminmvoc': voclist}
 
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
+filepath = filepath + scen+'/'+yr+ '/'
 
-#Experiment and simulation infor:
-table_id = 'monthly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
-
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test2010_newvocemis'
-yr = ''
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
