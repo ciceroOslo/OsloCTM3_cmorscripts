@@ -12,6 +12,30 @@ from specify_output import *
 #more standardized ouput. This script is adjusted to make the output
 #in the format needed in HYway, but can easily be adjusted to other projects.
 
+
+#Check if variable is in the prod-loss output
+def chech_if_drydep_exist(filepath,year,year_out,variable_out,variable):
+    variable_list = ['lat','lon',variable] 
+    print(variable_list)
+    
+    mnd=1
+    day=1
+    files = "scavenging_daily_2d_"+ str(year)+ str(mnd).zfill(2)+str(day).zfill(2)+ ".nc"
+    
+    data = xr.open_dataset(filepath +'/scavenging_daily/' + files ,decode_cf=False,decode_times=False)
+    
+    isdata = True
+        
+    if variable in data.variables:
+        print(f"Variable '{variable}' is present in the dataset.")
+        isdata = True
+    else:
+        print(f"Variable '{variable}' is not present in the dataset.")
+        isdata = False
+        
+    return isdata
+
+
 def read_scavenging_2d(filepath,year,year_out,variable_out,variable):
     variable_list = ['lat','lon',variable] 
     print(variable_list)
@@ -20,7 +44,7 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variable):
     for mnd in range(1,13):
         for day in range(1,dom[mnd-1]+1):
             files = "scavenging_daily_2d_"+ str(year)+ str(mnd).zfill(2)+str(day).zfill(2)+ ".nc"
-            print(files)
+            #print(files)
             if mnd == 1 and day == 1:
                 data = xr.open_dataset(filepath +'/scavenging_daily/' + files ,decode_cf=False,decode_times=False)
                 gridarea = data['gridarea']
@@ -48,17 +72,6 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variable):
     return monthly_mean
 
 
-'''
-
-long_name_dict = {'dryh2' : 'Dry deposition rate of hydrogen',	
-                  'dryo3':'Dry deposition rate of ozone',
-                  'dryco':'Dry deposition rate of carbon monoxide',
-                  'drych4':'Dry deposition rate of methane',
-                  'dryhcho':'Dry deposition rate of formaldehyde',	
-                  'drych3oh':'Dry deposition rate of methanol',
-                  'drymhp':'Dry deposition rate of methyl hydroperoxide'}
-
-'''
 
 long_name_dict = {'drych3cooh'	:'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_dry_deposition',
                   'drych3coch3'	:'tendency_of_atmosphere_mass_content_of_acetone_due_to_dry_deposition',
@@ -89,10 +102,10 @@ complist_dict = {'dryh2' : 'H2',
                  'dryhcho':'CH2O',	
                  'drych3oh':'CH3OH',
                  'drymhp':'CH3O2H',
-                 'drych3cooh':'CH3COOH',
                  'dryc2h6':'C2H6',
                  'dryc2h4':'C2H4',
                  'drypan':'PANX',
+                 'drych3cooh':'CH3COOH',
                  'dryc2h2':'C2H2',
                  'dryhcooh':'HCOOH'}
 
@@ -117,21 +130,26 @@ for m,metyear in enumerate(metyear_list):
         variable = 'dry_' + complist_dict[comp]
 
         print(filepath)
-        data_field = read_scavenging_2d(filepath,year,year_out,comp,variable)
 
-        data_out = data_field[[comp]]
-        data_out.attrs["history"] = history_text
-        data_out.attrs["model_version"] = model_id
-        data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+        isdata = chech_if_drydep_exist(filepath,year,year_out,comp,variable)
 
-        data_out[comp].attrs['long_name'] = long_name_dict[comp]
+                
+        if isdata:
+            data_field = read_scavenging_2d(filepath,year,year_out,comp,variable)
 
-        print(data_out)
-        
-        print('Write to file:')
-        print(filename)
-    
-        data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
+            data_out = data_field[[comp]]
+            data_out.attrs["history"] = history_text
+            data_out.attrs["model_version"] = model_id
+            data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+
+            data_out[comp].attrs['long_name'] = long_name_dict[comp]
+            
+            #print(data_out)
+            
+            print('Write to file:')
+            print(filename)
+            
+            data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
       
-        print(data_field)
+            #print(data_field)
 
