@@ -15,11 +15,31 @@ from specify_output import *
 
 #Todo NOx, add list of components included in combined variables. 
 
+#Check if variable is emitted
+def chech_if_emis_exist(filepath,year,year_out,variable_out,variable):
+    variable_list = ['lat','lon','lev','gridarea','delta_time', variable]
+    mnd = 0
+    files = f"emis_accumulated_3d_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
+    data = xr.open_dataset(filepath +'/emissions/' + files ,decode_cf=False,decode_times=False)
+                    
+    isdata = True
+        
+    if variable in data.variables:
+        print(f"Variable '{variable}' is emitted.")
+        isdata = True
+    else:
+        print(f"Variable '{variable}' is not emitted.")
+        isdata = False
+        
+    return isdata
+
+
+
 def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     variable_list = ['lat','lon','lev','gridarea','delta_time', variable]
     for mnd in range(0,12):
         files = f"emis_accumulated_3d_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
-        print(files)
+        #print(files)
         if mnd == 0:
             data = xr.open_dataset(filepath +'/emissions/' + files ,decode_cf=False,decode_times=False)
             data = data.get(variable_list)
@@ -47,7 +67,9 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     return data
 
 
-long_name_dict = {'emich3cooh':'Total emission rate of acetic acid',
+long_name_dict = {'emich3cho':'Total emission rate of acetaldehyde',
+                  'emic6h6':'Total emission rate of benzene',
+                  'emich3cooh':'Total emission rate of acetic acid',
                   'emich3coch3':'Total emission rate of acetone',
                   'eminh3':'Total emission rate of ammonia',
                   'emico':'Total emission rate of carbon monoxide',
@@ -69,6 +91,7 @@ long_name_dict = {'emich3cooh':'Total emission rate of acetic acid',
 	          'emic3h8':'Total emission rate of propane',	
 	          'emiso2':'Total emission rate of sulfur dioxide',	
 	          'emiso4':'Total direct emission rate of sulphate'}	
+
 
 
 voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
@@ -120,19 +143,18 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'C2H5OH']
 
            
-complist_dict = {'emic2h2': ['C2H2'],
+complist_dict = {'emich3cho':['CH3CHO'],
+                 'emic6h6':['Benzene'],
                  'emic2h4': ['C2H4'],
 	         'emic2h6': ['C2H6'],
 	         'emic3h6': ['C3H6'],
 	         'emic3h8': ['C3H8'],
 	         'emich3coch3':['ACETONE'],
-	         'emich3cooh': ['CH3COOH'],
 	         'emich3oh': ['CH3OH'],
 	         #'emich4': ['CH4'],
 	         'emico': ['CO'],
 	         'emidms': ['DMS'],
 	         #'emih2': ['H2'],
-	         'emihcooh': ['HCOOH'],
 	         'emihcho': ['CH2O'],
 	         'emiisop': ['ISOPRENE'],
 	         'emimtp': ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
@@ -141,7 +163,10 @@ complist_dict = {'emic2h2': ['C2H2'],
                  'emino2': ['NO2'],
 	         'emiso2': ['SO2'],
 	         'emiso4': ['SO4'],
-	         'eminmvoc': voclist}
+                 'emich3cooh': ['CH3COOH'],
+                 'emihcooh': ['HCOOH'],
+                 'eminmvoc': voclist,
+                 'emic2h2': ['C2H2']}
 
 
 filepath = filepath + scen+'/'+yr+ '/'
@@ -154,6 +179,7 @@ for m,metyear in enumerate(metyear_list):
 
     time_range = str(year)+ '01-' + str(year) + '12'
 
+    write_to_file = False
     for comp in complist_dict:
         print(comp)
         variable_id = comp 
@@ -163,29 +189,35 @@ for m,metyear in enumerate(metyear_list):
         for v, variable in enumerate(complist_dict[comp]):
             if v == 0:
                 print(variable)
-                data_field = read_emis_accumulated(filepath,metyear,year_out,comp,variable)
+
+                isdata = chech_if_emis_exist(filepath,metyear,year_out,comp,variable)
+                if isdata:
+                    data_field = read_emis_accumulated(filepath,metyear,year_out,comp,variable)
+                    write_to_file = True
+                else:
+                    write_to_file = False
             else:
                 print(variable)
-                data = read_emis_accumulated(filepath,metyear,year_out,'tmp',variable)
-                data_field[comp] = data_field[comp] + data['tmp']
-                #data_field = data_field.drop_vars('tmp')
-
+                isdata = chech_if_emis_exist(filepath,metyear,year_out,'tmp',variable)
                 
-        print(data_field[comp])
+                if isdata:
+                    data = read_emis_accumulated(filepath,metyear,year_out,'tmp',variable)
+                    data_field[comp] = data_field[comp] + data['tmp']
+                    
 
-        data_out = data_field[[comp]]
-        data_out.attrs["history"] = history_text
-        data_out.attrs["model_verison"] = model_id
-        data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
-
-        data_out[comp].attrs['long_name'] = long_name_dict[comp]
-
-        print(data_out)
-        
-        print('Write to file:')
-        print(filename)
-    
-        data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
+        if write_to_file:        
+            data_out = data_field[[comp]]
+            data_out.attrs["history"] = history_text
+            data_out.attrs["model_verison"] = model_id
+            data_out.attrs["file_created"] =  datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") 
+            
+            data_out[comp].attrs['long_name'] = long_name_dict[comp]
+            
+                        
+            print('Write to file:')
+            print(filename)
+            
+            data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
       
 
-exit()
+
