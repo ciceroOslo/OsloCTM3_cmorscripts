@@ -8,13 +8,15 @@ import sys
 #more standardized ouput. This script is adjusted to make the output
 #in the format needed in HYway, but can easily be adjusted to other projects.
 
-#In the specify_output.py file, set the differemt information regarding the model simulations that
+#In the specify_output.py file, set the different information regarding the model simulations that
 #will be used.
+
 from specify_output import *
 
 
-#In addition to chemprod and loss, the script write also volume.
+#In addition to chemprod and loss, the script write also volume to netcdf file
 
+#Check if variable is in the prod-loss output
 def chech_if_pl_exist(filepath, year, year_out,variable):
     variable_list = ['lat','lon','lev','delta_time',variable]
     mnd = 0
@@ -36,6 +38,7 @@ def chech_if_pl_exist(filepath, year, year_out,variable):
     return isdata
 
 
+#Read prodloss output
 def read_prod_loss(filepath, year, year_out,variable):
     variable_list = ['lat','lon','lev','delta_time',variable]
 
@@ -69,6 +72,8 @@ def read_prod_loss(filepath, year, year_out,variable):
     
     return data
 
+
+#Check if variable is emitted
 def chech_if_emis_exist(filepath,year,year_out,variable_out,variable):
     variable_list = ['lat','lon','lev','gridarea','delta_time', variable]
     mnd = 0
@@ -87,6 +92,7 @@ def chech_if_emis_exist(filepath,year,year_out,variable_out,variable):
     return isdata
 
 
+#Read emissions. Must be subtracted from the total production.
 def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     variable_list = ['lat','lon','lev','gridarea','delta_time', variable]
     for mnd in range(0,12):
@@ -118,7 +124,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     
     return data
 
-
+#Read volume
 def read_avgsav_volume(filepath, year,year_out):
     #Read avsavg monthly files and combine to one dataset with time variable
 
@@ -128,13 +134,11 @@ def read_avgsav_volume(filepath, year,year_out):
     #Read all monthly files, add time variable and merge
     for mnd in range(0,12):
         files = f"avgsav_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
-        #print(files)
         if mnd == 0:
             data = xr.open_dataset(filepath +'/monthly_means/' + files ,decode_cf=False,decode_times=False)
             data = data.get(variable_list)
             data = data.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
         else:
-            #print(mnd)
             data_add = xr.open_dataset(filepath +'/monthly_means/' + files ,decode_cf=False,decode_times=False)
             data_add = data_add.get(variable_list)
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
@@ -149,8 +153,9 @@ def read_avgsav_volume(filepath, year,year_out):
     return data
 
 
-#long_name_dict_org = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_production',
-                      #'losso3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_destruction',
+#long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_production',
+#'losso3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_destruction',
+
 long_name_dict = {'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_production',
                   'lossh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_destruction',
                   'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
@@ -186,27 +191,25 @@ long_name_dict = {'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hyd
 
 
 
-
-
-complist_ctm_dict = {'o3'       : 'O3', #l
-                     'h2o'	: 'H2O', #l
-                     'h2'	: 'H2', #l
-                     'ch4'	: 'CH4', #l
-                     'co'	: 'CO', #l
-                     'hcho'	: 'CH2O', #l + photo
-                     'ch3oh'	: 'CH3OH', #l
-                     'isop'	: 'ISOPRENE', #l 
-                     'mhp'      : 'CH3O2H', #l
-                     'ch3coch3' : 'ACETONE', #l
-                     'chocho'   : 'HCOHCO', #l
-                     'pan'      : 'PANX', #l
-                     'c2h6'     : 'C2H6',#l
-                     'c2h4'     : 'C2H4', #l
-                     'c2h2'     : 'C2H2', #l
-                     'hcooh'    : 'HCOOH', #l
-                     'ch3cooh'  : 'CH3COOH', #l
-                     'c6h6'     : 'Benzene', #l
-                     'ch3cho'   : 'CH3CHO'} #l
+complist_ctm_dict = {'o3'       : 'O3', 
+                     'h2o'	: 'H2O', 
+                     'h2'	: 'H2', 
+                     'ch4'	: 'CH4', 
+                     'co'	: 'CO',
+                     'hcho'	: 'CH2O',
+                     'ch3oh'	: 'CH3OH', 
+                     'isop'	: 'ISOPRENE',
+                     'mhp'      : 'CH3O2H',
+                     'ch3coch3' : 'ACETONE', 
+                     'chocho'   : 'HCOHCO',
+                     'pan'      : 'PANX',
+                     'c2h6'     : 'C2H6',
+                     'c2h4'     : 'C2H4',
+                     'c2h2'     : 'C2H2',
+                     'hcooh'    : 'HCOOH',
+                     'ch3cooh'  : 'CH3COOH',
+                     'c6h6'     : 'Benzene',
+                     'ch3cho'   : 'CH3CHO'} 
 
 filepath = filepath +scen+'/'+yr+ '/'
 
@@ -219,13 +222,6 @@ for m,metyear in enumerate(metyear_list):
 
     time_range = str(year)+ '01-' + str(year) + '12'
 
-    #if year == 2010:
-    #    long_name_dict = long_name_dict_org
-    #    del long_name_dict['prodch3cooh']
-    #    del long_name_dict['lossch3cooh']
-    #else:
-    #    long_name_dict = long_name_dict_org
-    
     print(filepath)
 
     #Loop trough filenames
@@ -233,14 +229,11 @@ for m,metyear in enumerate(metyear_list):
         print(comp)
         variable_id = comp
         filename = outputpath + variable_id+'_'+table_id+'_'+model_id+'_'+project_id + '_' +experiment_id+'_'+member_id+'_'+time_range+'.nc'
-        #print(filename)
+
 
         prodloss = comp[0:4]
-        #print(prodloss)
         var = comp[4:]
-        #print(var)
 
-        
         if var == 'photohcho':
             variable = complist_ctm_dict['hcho'] +'_'+ prodloss.upper()
             nchem = 3 # ! CH2O + hv   -> H2 + CO   DBCH2O
@@ -255,58 +248,42 @@ for m,metyear in enumerate(metyear_list):
             variable = complist_ctm_dict[var] +'_'+ prodloss.upper()
             nchem = 0
                        
-        #print(variable)
 
+        #Check if data:
         isdata = chech_if_pl_exist(filepath, year, year_out,variable)
         
         if isdata:
             pl_data = read_prod_loss(filepath, year, year_out,variable)
 
             if prodloss == 'loss' and nchem == 0:
-                #Remove drydeposition
+                #Remove drydeposition from total chemical production
                 pl_data = pl_data.isel(nchemdiag=nchem)-pl_data.isel(nchemdiag=1)
             else:
                 pl_data = pl_data.isel(nchemdiag=nchem)
         
             volume = read_avgsav_volume(filepath, year,year_out)
-            #print(volume)
+
+            #Write volume to file 
             if c == 0:
-            
                 volume_filename = outputpath + 'volume' +'_'+table_id+'_'+model_id+'_'+project_id + '_' +experiment_id+'_'+member_id+'_'+time_range+'.nc'
                 print('Write to file: ' + volume_filename)
                 volume.to_netcdf(volume_filename ,encoding={"time":{'dtype': 'float64'}})
 
+
+                
         
             #If total production, we have to remove the emissions.
             if (prodloss == 'prod'):
-               
-                if(var == 'photoh2'):
+                if(var == 'photoh2'): #Can also check if nchem = 0.
                     is_emitted = False
                 else:
                     is_emitted = chech_if_emis_exist(filepath,year,year_out,var,complist_ctm_dict[var])
                     
                 if(is_emitted):
-                    #if var == 'mhp':
-                    #    print('No emissions for: ', var)
-                    #elif var == 'h2o':
-                    #    print('No emissions for: ', var)
-                    #elif var == 'pan':
-                    #    print('No emissions for: ', var)
-                    #elif var == 'chocho':
-                    #    print('No emissions for: ', var)
-                    #if var == 'photoh2':
-                    #    print('No emissions for: ', var)
-                    #elif var == 'h2' and experiment_id == 'transient2010s':
-                    #    print('No emissions in this experiment: ', experiment_id)
-                    #else:
-
                     emisdata = read_emis_accumulated(filepath,year,year_out,var,complist_ctm_dict[var])
-                    #print(emisdata)
                     pl_data[variable] = pl_data[variable] - emisdata[var]
                     
         
-        
-            
             #Divide by volume
                 
             pl_data[comp] = pl_data[variable]/volume['volume']
@@ -319,10 +296,6 @@ for m,metyear in enumerate(metyear_list):
             data_out.attrs["history"] = history_text
             data_out[comp].attrs['long_name'] = long_name_dict[comp]
 
-        
-    
-            #print(data_out)
-            
             print('Write to file:')
             print(filename)
             data_out.to_netcdf(filename,encoding={"time":{'dtype': 'float64'}})
