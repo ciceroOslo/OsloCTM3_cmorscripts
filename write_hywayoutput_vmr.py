@@ -73,7 +73,8 @@ def find_molecw(variable):
 
 
 
-long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
+long_name_dict = {'ch3cho':     'mole_fraction_of_acetaldehyde_in_air',
+                  'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
                   'ch3coch3':	'mole_fraction_of_acetone_in_air',
                   'nh3':	'mole_fraction_of_ammonia_in_air',
                   'c6h6':	'mole_fraction_of_benzene_in_air',
@@ -103,6 +104,7 @@ long_name_dict = {'ch3cooh':	'mole_fraction_of_acetic_acid_in_air',
                   'so2':	'mole_fraction_of_sulfur_dioxide_in_air',
                   'tol':	'mole_fraction_of_toluene_in_air',
                   'h2o':	'mole_fraction_of_water_vapor_in_air'}
+
 
 
 
@@ -197,25 +199,26 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'oh'	: ['OH'],
                      'hcho'	: ['CH2O'],
                      'so2'	: ['SO2'],
-                     'c2h2'	: ['C2H2'],
+                     'ch3oh'	: ['CH3OH'],
                      'c2h4'	: ['C2H4'],
                      'c2h6'	: ['C2H6'],
                      'c3h6'	: ['C3H6'],
                      'c3h8'	: ['C3H8'],
                      'ch3coch3' : ['ACETONE'],
-                     'ch3cooh'	: ['CH3COOH'],
-                     'ch3oh'	: ['CH3OH'],
                      'dms'	: ['DMS'] ,
-                     'hcooh'	: ['HCOOH'],
                      'hno3'	: ['HNO3'] ,
                      'isop'	: ['ISOPRENE'],
                      'mhp'	: ['CH3O2H'],
                      'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
                      'nh3'	: ['NH3'],
-                     'nmvoc'    : voclist,
                      'c6h6'     : ['Benzene'],
                      'tol'      : ['Tolmatic'], 
-                     'pan'      : ['PANX','CH3X']}
+                     'pan'      : ['PANX','CH3X'],
+                     'ch3cho'   : ['CH3CHO'],
+                     'ch3cooh'	: ['CH3COOH'],
+                     'hcooh'	: ['HCOOH'],                     
+                     'c2h2'	: ['C2H2'],
+                     'nmvoc'    : voclist}
 
 
 
@@ -242,11 +245,14 @@ for m,metyear in enumerate(metyear_list):
         print(variables)
         data_field=read_avgsav(filepath,metyear,year_out,variables)
 
+
+        
         for v,var in enumerate(variables):
             if v ==0:
                 print(var)
+        
                 data_field = calc_vmr(data_field,var,comp)
-                print(data_field)
+                                
             else:
                 print(var)
                 data_field = calc_vmr(data_field,var,'tmp')
