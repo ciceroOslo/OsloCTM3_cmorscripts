@@ -63,8 +63,8 @@ for m,metyear in enumerate(metyear_list):
     for comp in complist_ctm_dict:
         
         variable_id = comp 
-        filename = outputpath + variable_id+'_'+table_id+'_'+model_id+'_'+project_id  +'.nc'
-
+        
+        filename = outputpath + variable_id+'_'+table_id+'_'+model_id+'_'+project_id + '_' +experiment_id+'_'+member_id+'_'+time_range+'.nc'
         print(filename)
 
         variables = complist_ctm_dict[comp]

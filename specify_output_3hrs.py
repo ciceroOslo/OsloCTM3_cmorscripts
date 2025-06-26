@@ -1,8 +1,8 @@
 #Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/final/'
+outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/final/3hrs/'
 
 #Experiment and simulation information. To be used in the filename
-table_id = 'monthly'
+table_id = '3hourly'
 model_id = 'OsloCTM3v1-2'
 #model_id = 'OsloCTM3v1-1'
 experiment_id = 'transient2010s'
@@ -13,7 +13,7 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 
-year_use = 2016 #2013
+year_use = 2015
 
 
 
@@ -24,7 +24,7 @@ elif model_id == 'OsloCTM3v1-2':
 
 
 
-filepath_wo_lno = '/div/qbo/users/ragnhibs/HYway/CTM3_results_wolightning/'
+
 
 scen = str(year_use)
 yr = ''

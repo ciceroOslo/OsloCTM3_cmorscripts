@@ -2,11 +2,11 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
-#import matplotlib.pyplot as plt
 import sys
-#from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-#                               AutoMinorLocator)
 
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output_3hrs import *
 
 #This script read the OsloCTM3 model output and convert it to
 #more standardized ouput. This script is adjusted to make the output
@@ -20,7 +20,7 @@ def read_3hrs(filepath,fileprefix, year,variable):
     print(filepath)
     
     #Read all monthly files, add time variable and merge
-    for day in range(0,32):
+    for day in range(0,365):
         files = f"{fileprefix}{year}_{day+1:03}.nc"
         print(files)
         
@@ -78,25 +78,7 @@ long_name_dict = {'airmass':'atmosphere_mass_of_air_per_unit_area'}
 
 complist_ctm_dict = {'airmass'       : 'air_densit'}
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
-
-#Experiment and simulation infor:
-table_id = '3hourly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
-
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
-
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test_3hrl'
-yr = ''
-
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
+filepath = filepath + scen+'/'+yr+ '/'
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.

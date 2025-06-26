@@ -2,10 +2,11 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import datetime
-#import matplotlib.pyplot as plt
 import sys
-#from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-#                               AutoMinorLocator)
+
+#In the specify_output.py file, set the differemt information regarding the model simulations that
+#will be used.
+from specify_output_3hrs import *
 
 
 #This script read the OsloCTM3 model output and convert it to
@@ -20,23 +21,23 @@ def read_3hrs(filepath,fileprefix, year,variables):
     print(filepath)
     
     #Read all monthly files, add time variable and merge
-    for day in range(0,32):
+    for day in range(0,365):
         files = f"{fileprefix}{year}_{day+1:03}.nc"
-        print(files)
+        #print(files)
         print(filepath +'/'+fileprefix+'/' + files )
       
         if day == 0:
             data = xr.open_dataset(filepath +'/'+fileprefix+'/' + files ) # ,decode_cf=False,decode_times=False)
             data = data.get(variable_list)
-            print(data)
+            #print(data)
                         
         else:
             data_add = xr.open_dataset(filepath +'/'+fileprefix+'/' + files ) # ,decode_cf=False,decode_times=False)
-            print(data_add)
+            #print(data_add)
             data_add = data_add.get(variable_list)
             #data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
-            print(data)
+            #print(data)
            
 
     #Rename to standard units
@@ -69,7 +70,7 @@ def find_molecw(variable):
     #Find molecular weight for given variable
 
     #Read input file used in the CTM
-    tracer_file = 'input/tracer_list_all_h2.d'
+    tracer_file = 'input/tracer_list_all_h2_withVOC.d'
     header_list = ["TracerNumber","TCNAME","TCMASS","Comments"]
     df_tracer = pd.read_csv(tracer_file,skiprows=3,sep="\'",usecols=[0,1,2,3],names=header_list)
 
@@ -99,55 +100,44 @@ long_name_dict = {'o3':'mole_fraction_of_ozone_in_air',
                   'mtp':'mole_fraction_of_monoterpenes_in_air',
                   'c3h6':'mole_fraction_of_propene_in_air',
                   'c3h8':'mole_fraction_of_propane_in_air',
-                  'isop':'mole_fraction_of_isoprene_in_air'}
-
-
-
-complist_ctm_dict = {'o3'       : ['O3'],
-                     'co'	: ['CO'],
-                     #'h2'	: ['H2'],
-                     #'ch4'	: ['CH4'],
-                     'hcho'	: ['CH2O'],
-                     'h2o'	: ['H2O'],
-                     'nh3'	: ['NH3'],
-                     'no'	: ['NO'],
-                     'no2'	: ['NO2'],
-                     'hno3'	: ['HNO3'] ,
-                     'pan'      : ['PANX','CH3X'],
-                     'ch3coch3' : ['ACETONE'],
-                     #'ch3cooh'	: ['none'],
-                     'c2h6'	: ['C2H6'],
-                     'c2h4'	: ['C2H4'],
-                     #'c2h2'	: ['none'],
-                     #'hcooh'	: ['none'],
-                     'ch3oh'	: ['CH3OH'],
-                     'mtp'	: ['MNT'],
-                     'c3h6'	: ['C3H6'],
-                     'c3h8'	: ['C3H8'],
-                     'isop'	: ['ISOPRENE']}
+                  'isop':'mole_fraction_of_isoprene_in_air',
+                  'ch3cho': 'mole_fraction_of_acetaldehyde_in_air',
+                  'c6h6':'mole_fraction_of_benzene_in_air',
+                  'chocho':'mole_fraction_of_glyoxal_in_air'}
 
 
 
 
-#Specify outputpath
-outputpath = '/div/no-backup/users/ragnhibs/HYway/OsloCTM3output/'
 
-#Experiment and simulation infor:
-table_id = '3hourly'
-model_id = 'OsloCTM3-vtest'
-experiment_id = 'transient2010s'
-project_id = 'hyway'
-member_id = 'r1'
 
-history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
+complist_ctm_dict = {'o3':['O3'],
+                     'co':['CO'],
+                     #'h2':['H2'],
+                     #'ch4':['CH4'],
+                     'hcho':['CH2O'],
+                     'h2o': ['H2O'],
+                     'nh3':['NH3'],
+                     'no':['NO'],
+                     'no2':['NO2'],
+                     'hno3':['HNO3'] ,
+                     'pan':['PANX','CH3X'],
+                     'ch3coch3':['ACETONE'],
+                     'ch3cooh': ['CH3COOH'],
+                     'c2h6':['C2H6'],
+                     'c2h4':['C2H4'],
+                     #'c2h2':['C2H2'], Not included
+                     'hcooh':['HCOOH'],
+                     'ch3oh':['CH3OH'],
+                     'mtp': ['MNT'],
+                     'c3h6': ['C3H6'],
+                     'c3h8':['C3H8'],
+                     'isop':['ISOPRENE'],
+                     'ch3cho': ['CH3CHO'],
+                     'c6h6': ['Benzene'],
+                     'chocho': ['HCOHCO']}
 
-#Raw model output 
-scen = 'TEST_CTM3/CTM3_hyway_test_3hrl'
-yr = ''
+filepath = filepath + scen+'/'+yr+ '/'
 
-filepath = '/div/qbo/users/ragnhibs/AlternativeFuels/methanol/CTM3results/'+scen+'/'+yr+ '/'
-
-metyear_list = [2009]
 
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
