@@ -13,7 +13,7 @@ member_id = 'r1'
 history_text = 'OsloCTM3 simulations for HYway, contact: r.b.skeie@cicero.oslo.no'
 
 
-year_use = 2015
+year_use = 2019
 
 
 
