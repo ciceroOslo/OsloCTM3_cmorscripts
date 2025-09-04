@@ -189,7 +189,7 @@ long_name_dict = {'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hyd
                   'lossc6h6': 'tendency_of_atmosphere_mass_content_of_benzene_due_to_chemical_destruction',
                   'lossc2h2':'tendency_of_atmosphere_mass_content_of_ethyne_due_to_chemical_destruction'}
 
-
+long_name_dict = {'lossphotohcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis'}
 
 complist_ctm_dict = {'o3'       : 'O3', 
                      'h2o'	: 'H2O', 
@@ -236,7 +236,12 @@ for m,metyear in enumerate(metyear_list):
 
         if var == 'photohcho':
             variable = complist_ctm_dict['hcho'] +'_'+ prodloss.upper()
-            nchem = 3 # ! CH2O + hv   -> H2 + CO   DBCH2O
+            nchem = -99
+            nchem_list = [2, 3] # ! CH2O + hv   -> H2 + CO   DBCH2O
+           
+            #CHEMLOSS(3,13,L) = CHEMLOSS(3,13,L) + DACH2O*M_CH2O*DTCH
+            #CHEMLOSS(4,13,L) = CHEMLOSS(4,13,L) + DBCH2O*M_CH2O*DTCH
+            
         elif var == 'photoh2':
             variable = complist_ctm_dict['h2'] +'_'+ prodloss.upper()
             nchem = 1 #  ! CH2O + hv   -> H2 + CO   DBCH2O
@@ -258,6 +263,9 @@ for m,metyear in enumerate(metyear_list):
             if prodloss == 'loss' and nchem == 0:
                 #Remove drydeposition from total chemical production
                 pl_data = pl_data.isel(nchemdiag=nchem)-pl_data.isel(nchemdiag=1)
+            elif nchem == -99 : # photohcho
+                pl_data = pl_data.isel(nchemdiag=nchem_list[0])+pl_data.isel(nchemdiag=nchem_list[1])
+                
             else:
                 pl_data = pl_data.isel(nchemdiag=nchem)
         
