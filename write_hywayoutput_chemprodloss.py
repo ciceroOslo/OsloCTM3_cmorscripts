@@ -189,7 +189,6 @@ long_name_dict = {'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hyd
                   'lossc6h6': 'tendency_of_atmosphere_mass_content_of_benzene_due_to_chemical_destruction',
                   'lossc2h2':'tendency_of_atmosphere_mass_content_of_ethyne_due_to_chemical_destruction'}
 
-long_name_dict = {'lossphotohcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis'}
 
 complist_ctm_dict = {'o3'       : 'O3', 
                      'h2o'	: 'H2O', 
