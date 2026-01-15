@@ -34,7 +34,7 @@ def read_avgsav(filepath, year,year_out,variable):
             data = data.merge(data_add)
 
 
-     data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihya'] = data['ihya'].isel(time=0) 
     data['ihyb'] = data['ihyb'].isel(time=0) 
 
     #Rename to standard units
