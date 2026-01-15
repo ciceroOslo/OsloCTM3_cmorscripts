@@ -18,7 +18,7 @@ from specify_output import *
 
 #Check if variable is in the prod-loss output
 def chech_if_pl_exist(filepath, year, year_out,variable):
-    variable_list = ['lat','lon','lev','delta_time',variable]
+    variable_list = ['lat','lon','lev','ihya','ihyb','delta_time',variable]
     mnd = 0
     files = f"chemistryPL_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
     print(filepath + files)
@@ -40,7 +40,7 @@ def chech_if_pl_exist(filepath, year, year_out,variable):
 
 #Read prodloss output
 def read_prod_loss(filepath, year, year_out,variable):
-    variable_list = ['lat','lon','lev','delta_time',variable]
+    variable_list = ['lat','lon','lev','ihya','ihyb','delta_time',variable]
 
     #print(variable_list)
    
@@ -58,6 +58,9 @@ def read_prod_loss(filepath, year, year_out,variable):
             data_add = data_add.get(variable_list)
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
+
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0)
 
     data.lat.attrs['long_name'] = 'latitude'
     data.lon.attrs['long_name'] = 'longitude'
@@ -144,11 +147,13 @@ def read_avgsav_volume(filepath, year,year_out):
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
 
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0) 
+
     #Rename to standard units
-    data.lat.attrs['long_name'] = 'latitude'
-    data.lat.attrs['units'] = 'degrees_north'
-    data.lon.attrs['long_name'] = 'longitude'
-    data.lon.attrs['units'] = 'degrees_east'
+    data.lat.attrs.update({'long_name': 'latitude', 'units': 'degrees_north'})
+    data.lon.attrs.update({'long_name': 'longitude', 'units': 'degrees_east'})
+    
     
     return data
 

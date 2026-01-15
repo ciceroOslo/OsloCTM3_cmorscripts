@@ -34,11 +34,15 @@ def read_avgsav(filepath, year,year_out,variable):
             data = data.merge(data_add)
 
 
+     data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0) 
+
     #Rename to standard units
-    data.lat.attrs['long_name'] = 'latitude'
-    data.lat.attrs['units'] = 'degrees_north'
-    data.lon.attrs['long_name'] = 'longitude'
-    data.lon.attrs['units'] = 'degrees_east'
+
+    data.lat.attrs.update({'long_name': 'latitude', 'units': 'degrees_north'})
+    data.lon.attrs.update({'long_name': 'longitude', 'units': 'degrees_east'})
+
+    
     
     return data
 
