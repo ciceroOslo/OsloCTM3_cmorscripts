@@ -188,7 +188,7 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'C2H2']#        28.054    'Ethyne'
 
 
-
+#This is looped
 complist_ctm_dict = {'o3'       : ['O3'],
                      'h2o'	: ['H2O'],
                      'h2'	: ['H2'],
@@ -198,27 +198,10 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'no'	: ['NO'],
                      'oh'	: ['OH'],
                      'hcho'	: ['CH2O'],
-                     'so2'	: ['SO2'],
-                     'ch3oh'	: ['CH3OH'],
-                     'c2h4'	: ['C2H4'],
-                     'c2h6'	: ['C2H6'],
-                     'c3h6'	: ['C3H6'],
-                     'c3h8'	: ['C3H8'],
-                     'ch3coch3' : ['ACETONE'],
-                     'dms'	: ['DMS'] ,
-                     'hno3'	: ['HNO3'] ,
-                     'isop'	: ['ISOPRENE'],
-                     'mhp'	: ['CH3O2H'],
-                     'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
-                     'nh3'	: ['NH3'],
-                     'c6h6'     : ['Benzene'],
-                     'tol'      : ['Tolmatic'], 
-                     'pan'      : ['PANX','CH3X'],
-                     'ch3cho'   : ['CH3CHO'],
-                     'ch3cooh'	: ['CH3COOH'],
-                     'hcooh'	: ['HCOOH'],                     
-                     'c2h2'	: ['C2H2'],
-                     'nmvoc'    : voclist}
+                     'so2'	: ['SO2']}
+
+
+
 
 
 
@@ -228,10 +211,11 @@ filepath = filepath + scen+'/'+yr+ '/'
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     print(filepath)
 
     #Loop trough filenames

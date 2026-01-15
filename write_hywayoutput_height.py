@@ -53,10 +53,11 @@ filepath = filepath + scen+'/'+yr+ '/'
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     print(filepath)
 
     #Loop trough filenames

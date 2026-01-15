@@ -3,8 +3,8 @@ import subprocess
 # List of Python scripts to run
 scripts = ["write_hywayoutput_airmass.py",
            "write_hywayoutput_height.py",
-           "write_hywayoutput_gridarea.py",
-           "write_hywayoutput_surface_altitude.py",
+           #"write_hywayoutput_gridarea.py",
+           #"write_hywayoutput_surface_altitude.py",
            "write_hywayoutput_temperature.py",
            "write_hywayoutput_pressure.py",
            "write_hywayoutput_chemprodloss.py",
@@ -12,9 +12,10 @@ scripts = ["write_hywayoutput_airmass.py",
            "write_hywayoutput_emissions.py",
            "write_hywayoutput_mmr.py",
            "write_hywayoutput_vmr.py",
-           "write_hywayoutput_wetdep.py",
-           "write_hywayoutput_lightning_emissions_3d.py"]
+           "write_hywayoutput_wetdep.py"]
+           #"write_hywayoutput_lightning_emissions_3d.py"]
 
+#Can add a script that use transient2000s lightning emissions to produce emission files without lightning.
 
 for script in scripts:
     try:

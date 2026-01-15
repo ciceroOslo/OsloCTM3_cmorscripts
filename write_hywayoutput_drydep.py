@@ -91,23 +91,23 @@ long_name_dict = {'drych3cooh'	:'tendency_of_atmosphere_mass_content_of_acetic_a
                   'drypan'	:'tendency_of_atmosphere_mass_content_of_pan_due_to_dry_deposition'}
 
 
-
+#This is looped
 complist_dict = {'dryh2' : 'H2',	
-                 'drych3coch3' :'ACETONE',
+                 #'drych3coch3' :'ACETONE',
                  'dryo3':'O3',
                  'dryco':'CO',
-                 'drychocho': 'HCOHCO',
-                 'dryisop' : 'ISOPRENE',
+                 #'drychocho': 'HCOHCO',
+                 #'dryisop' : 'ISOPRENE',
                  #'drych4':'CH4',
                  'dryhcho':'CH2O',	
-                 'drych3oh':'CH3OH',
-                 'drymhp':'CH3O2H',
-                 'dryc2h6':'C2H6',
-                 'dryc2h4':'C2H4',
-                 'drypan':'PANX',
-                 'drych3cooh':'CH3COOH',
-                 'dryc2h2':'C2H2',
-                 'dryhcooh':'HCOOH'}
+                 'drych3oh':'CH3OH'}
+                 #'drymhp':'CH3O2H',
+                 #'dryc2h6':'C2H6',
+                 #'dryc2h4':'C2H4',
+                 #'drypan':'PANX',
+                 #'drych3cooh':'CH3COOH',
+                 #'dryc2h2':'C2H2',
+                 #'dryhcooh':'HCOOH'}
 
 
 
@@ -116,10 +116,10 @@ filepath = filepath +scen+'/'+yr+ '/'
 
 for m,metyear in enumerate(metyear_list):
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
-
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
+    
     for comp in complist_dict:
         print(comp)
         variable_id = comp 
