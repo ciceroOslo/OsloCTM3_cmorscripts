@@ -60,7 +60,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
               
         
     data[variable_out] = data[variable].sum(dim='lev')/(data['gridarea']*data['delta_time'])
-    data[variable_out].attrs['unit'] = 'kg m-2 s-1'
+    data[variable_out].attrs['units'] = 'kg m-2 s-1'
     
           
     

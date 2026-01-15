@@ -97,7 +97,7 @@ for m,metyear in enumerate(metyear_list):
 
 
         print(data_field[comp])
-        data_field[comp].attrs["unit"] =  'm'
+        data_field[comp].attrs["units"] =  'm'
 
         data_out = data_field[[comp]]
         data_out.attrs = data_field.attrs

@@ -40,7 +40,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
     data['delta_time'] = days_in_month*60.0*60.0*24.0
               
     data[variable_out] = data[variable]/(data['gridarea']*data['delta_time'])
-    data[variable_out].attrs['unit'] = 'kg m-2 s-1'
+    data[variable_out].attrs['units'] = 'kg m-2 s-1'
          
     
     return data
@@ -77,7 +77,7 @@ for m,metyear in enumerate(metyear_list):
 
         data_field['TotNO'] = data_field[comp]
         data_field[comp] = data_field[comp] - data_field_wo_lno[comp]
-        data_field[comp].attrs['unit'] = 'kg m-2 s-1'
+        data_field[comp].attrs['units'] = 'kg m-2 s-1'
         print(data_field[comp])
 
     
@@ -113,7 +113,7 @@ for m,metyear in enumerate(metyear_list):
         data_mol = data_field.copy()
         
         data_mol[comp] = data_out[comp].sum(dim='lev')*data_field['gridarea']/30.010*1000.0 #g/mol
-        data_mol[comp].attrs['unit'] = 'mol s-1'
+        data_mol[comp].attrs['units'] = 'mol s-1'
 
         data_out = data_mol[[comp]]
         data_out.attrs["history"] = history_text
@@ -141,7 +141,7 @@ for m,metyear in enumerate(metyear_list):
         print(data_field)
     
         data_field[comp] = data_field[comp].sum(dim='lev')
-        data_field[comp].attrs['unit'] = 'kg m-2 s-1'
+        data_field[comp].attrs['units'] = 'kg m-2 s-1'
         data_field[comp].attrs['long_name'] = 'tendency_of_atmosphere_mass_content_of_nitric oxide_due_to_emission'
 
         

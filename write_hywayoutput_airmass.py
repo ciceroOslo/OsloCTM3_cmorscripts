@@ -76,7 +76,7 @@ for m,metyear in enumerate(metyear_list):
     
     
     data_field[comp]  = data_field[variables]/data_field['gridarea']
-    data_field[comp].attrs["unit"] = 'kg m-2'
+    data_field[comp].attrs["units"] = 'kg m-2'
     
     
     

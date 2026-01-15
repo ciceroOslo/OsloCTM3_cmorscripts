@@ -68,7 +68,7 @@ def read_prod_loss(filepath, year, year_out,variable):
               
     data[variable] = data[variable]/data['delta_time'] #kg per gridbox per sec.
 
-    data[variable].attrs['unit'] = 'kg s-1'
+    data[variable].attrs['units'] = 'kg s-1'
     
     return data
 
@@ -118,7 +118,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
               
     #Keep in 3D
     data[variable_out] = data[variable]/data['delta_time']
-    data[variable_out].attrs['unit'] = 'kg s-1'
+    data[variable_out].attrs['units'] = 'kg s-1'
     data = data.drop(variable)
           
     
@@ -261,7 +261,7 @@ for m,metyear in enumerate(metyear_list):
             #Divide by volume
                 
             pl_data[comp] = pl_data[variable]/volume['volume']
-            pl_data[comp].attrs["unit"] =  'kg m-3 s-1'
+            pl_data[comp].attrs["units"] =  'kg m-3 s-1'
 
                    
                 

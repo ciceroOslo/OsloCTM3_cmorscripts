@@ -59,7 +59,7 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variables):
                 data = data.merge(data_add)
 
 
-    data[variable_out].attrs['unit'] = 'kg m-2 s-1'            
+    data[variable_out].attrs['units'] = 'kg m-2 s-1'            
     #print(data)
     
     monthly_mean = data[variable_out].resample(time='M').mean().to_dataset()

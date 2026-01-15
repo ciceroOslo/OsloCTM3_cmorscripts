@@ -107,7 +107,7 @@ for m,metyear in enumerate(metyear_list):
     
     data_out = data_field[[comp]]
     data_out[comp] = data_out[comp]*100.0 #hPa -> Pa
-    data_out[comp].attrs["unit"]='Pa'
+    data_out[comp].attrs["units"]='Pa'
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
     data_out[comp].attrs['long_name'] = long_name_dict[comp]
@@ -124,7 +124,7 @@ for m,metyear in enumerate(metyear_list):
     print(data_out)
     data_out = data_field[['ihya','ihyb',comp]]
     data_out[comp] = data_out[comp]*100.0 #hPa -> Pa
-    data_out[comp].attrs["unit"]='Pa'
+    data_out[comp].attrs["units"]='Pa'
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
     data_out.attrs["model_verison"] = model_id
