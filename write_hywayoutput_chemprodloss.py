@@ -18,7 +18,7 @@ from specify_output import *
 
 #Check if variable is in the prod-loss output
 def chech_if_pl_exist(filepath, year, year_out,variable):
-    variable_list = ['lat','lon','lev','delta_time',variable]
+    variable_list = ['lat','lon','lev','ihya','ihyb','delta_time',variable]
     mnd = 0
     files = f"chemistryPL_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
     print(filepath + files)
@@ -40,7 +40,7 @@ def chech_if_pl_exist(filepath, year, year_out,variable):
 
 #Read prodloss output
 def read_prod_loss(filepath, year, year_out,variable):
-    variable_list = ['lat','lon','lev','delta_time',variable]
+    variable_list = ['lat','lon','lev','ihya','ihyb','delta_time',variable]
 
     #print(variable_list)
    
@@ -59,6 +59,9 @@ def read_prod_loss(filepath, year, year_out,variable):
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
 
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0)
+
     data.lat.attrs['long_name'] = 'latitude'
     data.lon.attrs['long_name'] = 'longitude'
     
@@ -68,7 +71,7 @@ def read_prod_loss(filepath, year, year_out,variable):
               
     data[variable] = data[variable]/data['delta_time'] #kg per gridbox per sec.
 
-    data[variable].attrs['unit'] = 'kg s-1'
+    data[variable].attrs['units'] = 'kg s-1'
     
     return data
 
@@ -118,7 +121,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
               
     #Keep in 3D
     data[variable_out] = data[variable]/data['delta_time']
-    data[variable_out].attrs['unit'] = 'kg s-1'
+    data[variable_out].attrs['units'] = 'kg s-1'
     data = data.drop(variable)
           
     
@@ -144,11 +147,13 @@ def read_avgsav_volume(filepath, year,year_out):
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
 
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0) 
+
     #Rename to standard units
-    data.lat.attrs['long_name'] = 'latitude'
-    data.lat.attrs['units'] = 'degrees_north'
-    data.lon.attrs['long_name'] = 'longitude'
-    data.lon.attrs['units'] = 'degrees_east'
+    data.lat.attrs.update({'long_name': 'latitude', 'units': 'degrees_north'})
+    data.lon.attrs.update({'long_name': 'longitude', 'units': 'degrees_east'})
+    
     
     return data
 
@@ -156,39 +161,12 @@ def read_avgsav_volume(filepath, year,year_out):
 #long_name_dict = {#'prodo3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_production',
 #'losso3':'tendency_of_atmosphere_mass_content_of_ozone_due_to_chemical_destruction',
 
+#This is looped
 long_name_dict = {'prodh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_production',
                   'lossh2':'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_destruction',
                   'lossch4':'tendency_of_atmosphere_mass_content_of_methane_due_to_chemical_destruction_by_hydroxyl_radical',
-                  'prodco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_production',
-                  'lossco':'tendency_of_atmosphere_mass_content_of_carbon_monoxide_due_to_chemical_destruction',
-                  'prodhcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_production',
-                  'losshcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction',
-                  'lossphotohcho':'tendency_of_atmosphere_mass_content_of_formaldehyde_due_to_chemical_destruction_by_photolysis',
-                  'prodch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_production',
-                  'lossch3oh': 'tendency_of_atmosphere_mass_content_of_methanol_due_to_chemical_destruction',
-                  'lossisop':'tendency_of_atmosphere_mass_content_of_isoprene_due_to_chemical_destruction',
                   'prodh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_production',
-                  'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction',
-                  'prodmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_production',
-                  'lossmhp':'tendency_of_atmosphere_mass_content_of_methyl_hydroperoxide_due_to_chemical_destruction',
-                  'prodch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_production',
-                  'lossch3coch3': 'tendency_of_atmosphere_mass_content_of_acetone_due_to_chemical_destruction',
-                  'prodpan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_production',
-                  'losspan':'tendency_of_atmosphere_mass_content_of_peroxyacetyl_nitrate_due_to_chemical_destruction',
-                  'lossc2h6':'tendency_of_atmosphere_mass_content_of_ethane_due_to_chemical_destruction',
-                  'lossc2h4':'tendency_of_atmosphere_mass_content_of_ethene_due_to_chemical_destruction',
-                  'prodchocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_production',
-                  'losschocho': 'tendency_of_atmosphere_mass_content_of_glyoxal_due_to_chemical_destruction',
-                  'prodch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_production',
-                  'lossch3cooh': 'tendency_of_atmosphere_mass_content_of_acetic_acid_due_to_chemical_destruction',
-                  'prodhcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_production',
-                  'losshcooh': 'tendency_of_atmosphere_mass_content_of_formic_acid_due_to_chemical_destruction',
-                  'prodphotoh2': 'tendency_of_atmosphere_mass_content_of_molecular_hydrogen_due_to_chemical_production',
-                  'prodch3cho': 'tendency_of_atmosphere_mass_content_of_acetaldehyde_due_to_chemical_production',
-                  'lossch3cho': 'tendency_of_atmosphere_mass_content_of_acetaldehyde_due_to_chemical_destruction',
-                  'lossc6h6': 'tendency_of_atmosphere_mass_content_of_benzene_due_to_chemical_destruction',
-                  'lossc2h2':'tendency_of_atmosphere_mass_content_of_ethyne_due_to_chemical_destruction'}
-
+                  'lossh2o':'tendency_of_stratosphere_mass_content_of_water_vapor_due_to_chemical_destruction'}
 
 complist_ctm_dict = {'o3'       : 'O3', 
                      'h2o'	: 'H2O', 
@@ -217,10 +195,11 @@ for m,metyear in enumerate(metyear_list):
     print(metyear)
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     print(filepath)
 
     #Loop trough filenames
@@ -294,7 +273,7 @@ for m,metyear in enumerate(metyear_list):
             #Divide by volume
                 
             pl_data[comp] = pl_data[variable]/volume['volume']
-            pl_data[comp].attrs["unit"] =  'kg m-3 s-1'
+            pl_data[comp].attrs["units"] =  'kg m-3 s-1'
 
                    
                 

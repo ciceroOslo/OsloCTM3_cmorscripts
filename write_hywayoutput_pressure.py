@@ -34,12 +34,14 @@ def read_avgsav(filepath, year,year_out,variable):
             data = data.merge(data_add)
 
 
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0) 
+
     #Rename to standard units
-    data.lat.attrs['long_name'] = 'latitude'
-    data.lat.attrs['units'] = 'degrees_north'
-    data.lon.attrs['long_name'] = 'longitude'
-    data.lon.attrs['units'] = 'degrees_east'
-    
+
+    data.lat.attrs.update({'long_name': 'latitude', 'units': 'degrees_north'})
+    data.lon.attrs.update({'long_name': 'longitude', 'units': 'degrees_east'})
+        
     return data
 
 def calc_pfull(data):
@@ -79,10 +81,11 @@ filepath = filepath +scen+'/'+yr+ '/'
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     print(filepath)
     
     #Loop trough filenames
@@ -106,7 +109,7 @@ for m,metyear in enumerate(metyear_list):
     
     data_out = data_field[[comp]]
     data_out[comp] = data_out[comp]*100.0 #hPa -> Pa
-    data_out[comp].attrs["unit"]='Pa'
+    data_out[comp].attrs["units"]='Pa'
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
     data_out[comp].attrs['long_name'] = long_name_dict[comp]
@@ -123,7 +126,7 @@ for m,metyear in enumerate(metyear_list):
     print(data_out)
     data_out = data_field[['ihya','ihyb',comp]]
     data_out[comp] = data_out[comp]*100.0 #hPa -> Pa
-    data_out[comp].attrs["unit"]='Pa'
+    data_out[comp].attrs["units"]='Pa'
     data_out.attrs = data_field.attrs
     data_out.attrs["history"] = history_text
     data_out.attrs["model_verison"] = model_id

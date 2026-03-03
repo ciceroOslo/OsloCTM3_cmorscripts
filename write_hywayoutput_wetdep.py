@@ -59,7 +59,7 @@ def read_scavenging_2d(filepath,year,year_out,variable_out,variables):
                 data = data.merge(data_add)
 
 
-    data[variable_out].attrs['unit'] = 'kg m-2 s-1'            
+    data[variable_out].attrs['units'] = 'kg m-2 s-1'            
     #print(data)
     
     monthly_mean = data[variable_out].resample(time='M').mean().to_dataset()
@@ -89,33 +89,19 @@ long_name_dict = {'wetch3cooh':	'tendency_of_atmosphere_mass_content_of_acetic_a
 
 
 
-complist_dict = {'wetch3coch3': 'ACETONE',
-                 'wetnh3':'NH3',
-                 'wetc2h6' :'C2H6',
-                 'wetc2h4' : 'C2H4',
-                 'wetc6h6' : 'Benzene',
-                 'wethcho': 'CH2O',	
-                 'wetchocho':'HCOHCO',
-                 'wetisop': 'ISOPRENE', 
-                 'wetch3oh': 'CH3OH',	
-                 'wetmhp': 'CH3O2H',	
-                 'wetpan' : 'PANX',
-                 'wetso4': 'SO4',
-                 'wetc2h2' : 'C2H2',
-                 'wethcooh':'HCOOH',
-                 'wetch3cooh': 'CH3COOH'}
-
-
-    
+complist_dict = {'wethcho': 'CH2O',	
+                 'wetch3oh': 'CH3OH'}	
+                     
 
 filepath = filepath  + scen+'/'+yr+ '/'
 
 for m,metyear in enumerate(metyear_list):
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     for comp in complist_dict:
         print(comp)
         variable_id = comp 

@@ -3,6 +3,7 @@ import pandas as pd
 import xarray as xr
 import datetime
 import sys
+import os
 
 #In the specify_output.py file, set the differemt information regarding the model simulations that
 #will be used.
@@ -12,12 +13,11 @@ from specify_output import *
 #more standardized ouput. This script is adjusted to make the output
 #in the format needed in HYway, but can easily be adjusted to other projects.
 
-def read_avgsav(filepath, year,year_out,variables):
-    #Read avsavg monthly files and combine to one dataset with time variable
 
+def read_avgsav(filepath, year,year_out,variables):
     #Specify variable list
     variable_list = ['lat','lon','lev','ihya','ihyb','AIR'] +  variables
-
+    variable_list_add = ['lat','lon','lev','AIR'] +  variables
     #Read all monthly files, add time variable and merge
     for mnd in range(0,12):
         files = f"avgsav_{year}{mnd+1:02}01_{year+ (mnd+1)//12}{(mnd+1)%12+1:02}01.nc"
@@ -32,13 +32,15 @@ def read_avgsav(filepath, year,year_out,variables):
             data_add = data_add.get(variable_list)
             data_add = data_add.expand_dims(time=[datetime.datetime(year_out,mnd+1,15)])
             data = data.merge(data_add)
-
+            
+    
+    data['ihya'] = data['ihya'].isel(time=0) 
+    data['ihyb'] = data['ihyb'].isel(time=0) 
 
     #Rename to standard units
-    data.lat.attrs['long_name'] = 'latitude'
-    data.lat.attrs['units'] = 'degrees_north'
-    data.lon.attrs['long_name'] = 'longitude'
-    data.lon.attrs['units'] = 'degrees_east'
+
+    data.lat.attrs.update({'long_name': 'latitude', 'units': 'degrees_north'})
+    data.lon.attrs.update({'long_name': 'longitude', 'units': 'degrees_east'})
     
     return data
 
@@ -188,7 +190,7 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'C2H2']#        28.054    'Ethyne'
 
 
-
+#This is looped
 complist_ctm_dict = {'o3'       : ['O3'],
                      'h2o'	: ['H2O'],
                      'h2'	: ['H2'],
@@ -198,27 +200,10 @@ complist_ctm_dict = {'o3'       : ['O3'],
                      'no'	: ['NO'],
                      'oh'	: ['OH'],
                      'hcho'	: ['CH2O'],
-                     'so2'	: ['SO2'],
-                     'ch3oh'	: ['CH3OH'],
-                     'c2h4'	: ['C2H4'],
-                     'c2h6'	: ['C2H6'],
-                     'c3h6'	: ['C3H6'],
-                     'c3h8'	: ['C3H8'],
-                     'ch3coch3' : ['ACETONE'],
-                     'dms'	: ['DMS'] ,
-                     'hno3'	: ['HNO3'] ,
-                     'isop'	: ['ISOPRENE'],
-                     'mhp'	: ['CH3O2H'],
-                     'mtp'	: ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
-                     'nh3'	: ['NH3'],
-                     'c6h6'     : ['Benzene'],
-                     'tol'      : ['Tolmatic'], 
-                     'pan'      : ['PANX','CH3X'],
-                     'ch3cho'   : ['CH3CHO'],
-                     'ch3cooh'	: ['CH3COOH'],
-                     'hcooh'	: ['HCOOH'],                     
-                     'c2h2'	: ['C2H2'],
-                     'nmvoc'    : voclist}
+                     'so2'	: ['SO2']}
+
+
+
 
 
 
@@ -228,10 +213,11 @@ filepath = filepath + scen+'/'+yr+ '/'
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     print(filepath)
 
     #Loop trough filenames

@@ -60,7 +60,7 @@ def read_emis_accumulated(filepath,year,year_out,variable_out,variable):
               
         
     data[variable_out] = data[variable].sum(dim='lev')/(data['gridarea']*data['delta_time'])
-    data[variable_out].attrs['unit'] = 'kg m-2 s-1'
+    data[variable_out].attrs['units'] = 'kg m-2 s-1'
     
           
     
@@ -142,7 +142,7 @@ voclist = ['C2H4' ,#       28.052    'Ethene [CH2CH2]'
            'BIGENE',
            'C2H5OH']
 
-           
+#This is looped           
 complist_dict = {'emich3cho':['CH3CHO'],
                  'emic6h6':['Benzene'],
                  'emic2h4': ['C2H4'],
@@ -154,7 +154,7 @@ complist_dict = {'emich3cho':['CH3CHO'],
 	         #'emich4': ['CH4'],
 	         'emico': ['CO'],
 	         'emidms': ['DMS'],
-	         #'emih2': ['H2'],
+	         'emih2': ['H2'],
 	         'emihcho': ['CH2O'],
 	         'emiisop': ['ISOPRENE'],
 	         'emimtp': ['Apine','Bpine','Limon','Myrcene','Sabine','D3carene', 'Ocimene', 'Trpolene', 'Trpinene'],
@@ -175,10 +175,11 @@ filepath = filepath + scen+'/'+yr+ '/'
 for m,metyear in enumerate(metyear_list):
     #For steady state simulations, have to make changes here.
     year = metyear
-    year_out  = year
+    year_out  = yrstart + m 
 
-    time_range = str(year)+ '01-' + str(year) + '12'
+    time_range = str(year_out)+ '01-' + str(year_out) + '12'
 
+    
     write_to_file = False
     for comp in complist_dict:
         print(comp)
